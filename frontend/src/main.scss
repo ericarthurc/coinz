@@ -55,10 +55,25 @@ html {
   margin-bottom: 5px;
   border-radius: 0.5rem;
   border: 2px solid $black;
-  padding: 5px 5px;
+  padding: 5px 10px;
+  display: flex;
 
-  .amount {
-    color: $red;
+  .expense_card_date {
+    margin-right: auto;
+  }
+
+  .expense_card_store {
+  }
+
+  .expense_card_box_3 {
+    margin-left: auto;
+    .expense_card_amount {
+      color: $red;
+      margin-right: 10px;
+    }
+
+    .expense_card_button_add {
+    }
   }
 }
 
