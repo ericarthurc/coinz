@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
+import path from "path";
 
 export default defineConfig({
   plugins: [solidPlugin()],
@@ -9,6 +10,12 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:4032",
       },
+    },
+  },
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "./src/components"),
     },
   },
   build: {

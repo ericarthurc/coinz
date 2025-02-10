@@ -1,7 +1,87 @@
-html {
-  margin: 0;
-  padding: 0;
+$blue: #629feb;
+$green: #67ae67;
+$red: #ce423a;
+$white: #fff;
+$black: #1d1d1d;
+
+@font-face {
+  font-family: "Inter";
+  font-weight: normal;
+  src: url("./src/assets/fonts/InterVariable.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+}
+
+*,
+*:before,
+*:after {
   box-sizing: border-box;
-  background: #111111;
-  color: #fff;
+}
+
+html {
+  background: $white;
+  color: $black;
+  font-family: "Inter", "Helvetica", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  -webkit-font-smoothing: antialiased;
+}
+
+.budget_card {
+  margin-bottom: 10px;
+  border-radius: 0.5rem;
+  border: 3px solid #a146c2;
+  background-color: #ead5f1;
+  padding: 7px 7px;
+
+  .budget_card_header {
+    display: flex;
+    margin-bottom: 5px;
+    padding: 0 3px;
+    justify-content: space-between;
+
+    .budget_card_category {
+      font-weight: bold;
+    }
+
+    .budget_card_total {
+      font-weight: bold;
+      color: #629feb;
+    }
+  }
+}
+
+.expense_card {
+  background: $white;
+  margin-bottom: 5px;
+  border-radius: 0.5rem;
+  border: 2px solid $black;
+  padding: 5px 5px;
+
+  .amount {
+    color: $red;
+  }
+}
+
+.expense_adder {
+  background: #b0f7b0;
+  display: flex;
+  border: 2px solid $green;
+  border-radius: 0.5rem;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+
+  label {
+    margin-right: 5px;
+  }
+
+  input {
+    width: 100%;
+    margin-right: 5px;
+    background: transparent;
+    border: transparent;
+    border-bottom: 1px solid $black;
+  }
+
+  button {
+  }
 }
