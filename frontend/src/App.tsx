@@ -17,15 +17,27 @@ const monthMap: Record<string, string> = {
   twelve: "December",
 };
 
-const fetcher = async () => {
-  const response = await fetch(`/api`);
+const fetcher = async (month: string, info: any) => {
+  const queriedMonth = "two";
+
+  console.log(info);
+
+  const response = await fetch(`/api/v1/budget?month=${info.refetching}`);
   return response.json();
 };
 
 const App: Component = () => {
-  const [data, { mutate, refetch }] = createResource(fetcher, {
+  // use a localStorage value to check what month to grab
+  const [data, { mutate, refetch }] = createResource("", fetcher, {
     initialValue: [],
   });
+
+  async function getManualMonth(month: string) {
+    // set localStorage value here
+    console.log(month);
+
+    refetch(month);
+  }
 
   async function deleteExpense(
     event: MouseEvent & {
@@ -45,7 +57,7 @@ const App: Component = () => {
         throw new Error("bad request");
       }
 
-      refetch();
+      refetch("DELETER");
     } catch (error) {
       console.log(error);
     }
@@ -80,7 +92,7 @@ const App: Component = () => {
         throw new Error("bad request");
       }
 
-      refetch();
+      refetch("ADDER");
     } catch (error) {
       console.log(error);
     }
@@ -97,6 +109,11 @@ const App: Component = () => {
   return (
     <main>
       <h1>Coinz</h1>
+      <div>
+        <button onClick={() => getManualMonth("one")}>Jan</button>
+        <button onClick={() => getManualMonth("two")}>Feb</button>
+        <button onClick={() => getManualMonth("three")}>March</button>
+      </div>
       <button onClick={() => refetch()}>Manual Refresh</button>
       <div class="main_container">
         <h2>{data()[0] && monthMap[data()[0].month]}</h2>

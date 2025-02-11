@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import prisma from "./database/prisma";
 import { month_enum } from "@prisma/client";
-const app = new Hono();
 
 const monthMap: Record<number, keyof typeof month_enum> = {
   1: "one",
@@ -19,9 +18,34 @@ const monthMap: Record<number, keyof typeof month_enum> = {
   12: "twelve",
 };
 
-app.get("/api", async (c) => {
-  const currentMonth = monthMap[new Date().getMonth() + 1];
+const app = new Hono();
 
+app.get("/api/v1/budget", async (c) => {
+  const { month } = c.req.query();
+  // console.log("QUERY", month);
+
+  if (month) {
+    const queriedMonth = month as keyof typeof month_enum;
+    const monthlyBudgets = await prisma.monthly_budgets.findMany({
+      where: {
+        month: month_enum[queriedMonth],
+      },
+      include: {
+        categories: true,
+        expenses: true,
+      },
+    });
+
+    // handle this differently
+    // if a query to a month returns no values and a empty []
+    // if (monthlyBudgets.length == 0) {
+    //   return c.notFound();
+    // }
+
+    return c.json(monthlyBudgets);
+  }
+
+  const currentMonth = monthMap[new Date().getMonth() + 1];
   const monthlyBudgets = await prisma.monthly_budgets.findMany({
     where: {
       month: month_enum[currentMonth],
@@ -31,8 +55,6 @@ app.get("/api", async (c) => {
       expenses: true,
     },
   });
-
-  // console.log(monthlyBudgets[0].month);
 
   return c.json(monthlyBudgets);
 });
