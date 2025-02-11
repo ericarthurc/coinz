@@ -20,10 +20,10 @@ model categories {
 model expenses {
   id                 Int             @id @default(autoincrement())
   category_id        Int
-  monthly_budgets_id Int
   amount             Decimal         @db.Decimal(10, 2)
   timestamp          DateTime?       @default(now()) @db.Timestamp(6)
   store              String?
+  monthly_budgets_id Int
   categories         categories      @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   monthly_budgets    monthly_budgets @relation(fields: [monthly_budgets_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
@@ -31,9 +31,22 @@ model expenses {
 model monthly_budgets {
   id          Int        @id @default(autoincrement())
   category_id Int
-  month       DateTime   @db.Timestamp(6)
-  categories  categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  month       month_enum
   expenses    expenses[]
+  categories  categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
 
-  @@unique([category_id, month])
+enum month_enum {
+  one    @map("1")
+  two    @map("2")
+  three  @map("3")
+  four   @map("4")
+  five   @map("5")
+  six    @map("6")
+  seven  @map("7")
+  eight  @map("8")
+  nine   @map("9")
+  ten    @map("10")
+  eleven @map("11")
+  twelve @map("12")
 }

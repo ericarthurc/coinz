@@ -2,6 +2,21 @@ import { createResource, createSignal, For, type Component } from "solid-js";
 import { DOMElement } from "solid-js/jsx-runtime";
 import BudgetCard from "@/BudgetCard";
 
+const monthMap: Record<string, string> = {
+  one: "January",
+  two: "February",
+  three: "March",
+  four: "April",
+  five: "May",
+  six: "June",
+  seven: "July",
+  eight: "August",
+  nine: "September",
+  ten: "October",
+  eleven: "November",
+  twelve: "December",
+};
+
 const fetcher = async () => {
   const response = await fetch(`/api`);
   return response.json();
@@ -11,6 +26,30 @@ const App: Component = () => {
   const [data, { mutate, refetch }] = createResource(fetcher, {
     initialValue: [],
   });
+
+  async function deleteExpense(
+    event: MouseEvent & {
+      currentTarget: HTMLButtonElement;
+      target: DOMElement;
+    },
+    expenseId: string
+  ) {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(`/api/v1/expense/${expenseId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("bad request");
+      }
+
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function addExpense(
     event: MouseEvent & {
@@ -22,7 +61,6 @@ const App: Component = () => {
     data: { amount: number; store: string }
   ) {
     event.preventDefault();
-    console.log(budgetId, categoryId);
 
     const value = {
       category_id: categoryId,
@@ -59,17 +97,26 @@ const App: Component = () => {
   return (
     <main>
       <h1>Coinz</h1>
-      <div>
-        <button onClick={() => refetch()}>Manual Refresh</button>
-        <h2>
-          {data()[1] &&
-            new Date(data()[1]?.month).toLocaleDateString("default", {
-              month: "long",
-            })}
-        </h2>
+      <button onClick={() => refetch()}>Manual Refresh</button>
+      <div class="main_container">
+        <h2>{data()[0] && monthMap[data()[0].month]}</h2>
 
-        <For each={data()} fallback={<div>Spin to Win!</div>}>
-          {(entry, i) => <BudgetCard entry={entry} addExpense={addExpense} />}
+        <For
+          each={data()}
+          fallback={
+            <>
+              <h2>Month loading....</h2>
+              <div class="budget_card"></div>
+            </>
+          }
+        >
+          {(entry, i) => (
+            <BudgetCard
+              entry={entry}
+              addExpense={addExpense}
+              deleteExpense={deleteExpense}
+            />
+          )}
         </For>
       </div>
     </main>

@@ -10,6 +10,7 @@ const BudgetCard: Component<{
     cat_id: any,
     data: { store: string; amount: number }
   ) => void;
+  deleteExpense: (event: any, exp_id: any) => void;
 }> = (props) => {
   function calculateSpent(entry: any): number {
     let spent = 0;
@@ -32,7 +33,7 @@ const BudgetCard: Component<{
   }
 
   return (
-    <div class="budget_card">
+    <div id="budget_card" class="budget_card">
       <div class="budget_card_header">
         <span class="budget_card_category">
           {props.entry.categories.name.charAt(0).toUpperCase() +
@@ -43,7 +44,9 @@ const BudgetCard: Component<{
         </span>
       </div>
       <For each={props.entry.expenses}>
-        {(expense, i) => <ExpenseCard expense={expense} />}
+        {(expense, i) => (
+          <ExpenseCard expense={expense} deleteExpense={props.deleteExpense} />
+        )}
       </For>
       <ExpenseForm entry={props.entry} addExpense={props.addExpense} />
       <span>Total Spent: ${calculateSpent(props.entry).toString()} | </span>

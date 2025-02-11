@@ -1,4 +1,5 @@
 import { Component, createSignal } from "solid-js";
+import { AddIcon } from "~/icons/svgIcons";
 
 const ExpenseForm: Component<{
   entry: any;
@@ -37,7 +38,7 @@ const ExpenseForm: Component<{
           })
         }
       >
-        +
+        <AddIcon />
       </button>
     </form>
   );
