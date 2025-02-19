@@ -1,0 +1,12 @@
+# go
+.env
+
+# air
+/bin/
+/tmp/
+
+# compiled
+web/compiled/*
+*_templ.go
+build
+*.exe
