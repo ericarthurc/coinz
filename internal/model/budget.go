@@ -1,4 +1,4 @@
-package budget
+package model
 
 import (
 	"time"
@@ -28,12 +28,12 @@ type MonthlyBudget struct {
 }
 
 type Expense struct {
-	Id                int       `json:"id"`
-	Monthly_budget_id int       `json:"monthly_budget_id"`
-	Category_id       int       `json:"category_id"`
-	Spent             float64   `json:"spent"`
-	Store             string    `json:"store"`
-	Timestamp         time.Time `json:"timestamp"`
+	Id          int       `json:"id"`
+	Budget_id   int       `json:"budget_id"`
+	Category_id int       `json:"category_id"`
+	Spent       float64   `json:"spent"`
+	Store       string    `json:"store"`
+	Timestamp   time.Time `json:"timestamp"`
 }
 
 type Category struct {

@@ -8,6 +8,7 @@ import (
 
 	"coinz/internal/controller/api/budget"
 	"coinz/internal/database"
+	"coinz/internal/model"
 	"coinz/internal/orbit"
 
 	"github.com/go-chi/chi/v5"
@@ -62,18 +63,23 @@ func main() {
 			return
 		}
 
-		_, err = dbPool.Pool.Exec(context.Background(), `INSERT INTO expense (spent, store, budget_id, category_id) VALUES (@spent, @store, @budget_id, (SELECT category_id FROM budget WHERE budget.id = (@budget_id))) RETURNING id, store, spent;`, pgx.NamedArgs{
+		rows, err := dbPool.Pool.Query(context.Background(), `INSERT INTO expense (spent, store, budget_id, category_id) VALUES (@spent, @store, @budget_id, (SELECT category_id FROM budget WHERE budget.id = (@budget_id))) RETURNING *;`, pgx.NamedArgs{
 			"spent":     data.Spent,
 			"store":     data.Store,
 			"budget_id": data.BudgetId,
 		})
-
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
 
-		orb.JSON(w, 200, "okay")
+		expense, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[model.Expense])
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		orb.JSON(w, 200, expense)
 	})
 
 	r.Delete("/api/expense/{id}", func(w http.ResponseWriter, r *http.Request) {

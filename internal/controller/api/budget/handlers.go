@@ -1,7 +1,7 @@
 package budget
 
 import (
-	"coinz/internal/model/dto"
+	"coinz/internal/model"
 	"net/http"
 )
 
@@ -29,7 +29,7 @@ func newHandlers(router *router) *handlers {
 //	}
 func (h *handlers) getAllBudgetsJSON() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		budgets, err := dto.GetAllMonthlyBudgetsDTO(h.DbPool)
+		budgets, err := model.GetAllMonthlyBudgetsDTO(h.DbPool)
 		if err != nil {
 			h.Orbit.ErrorJSON(w, 500, err.Error())
 		}
