@@ -12,6 +12,7 @@ const props = defineProps<{ budget: IDtoBudget }>();
 <template>
   <div class="category-container">
     <div class="category-header">
+      <span></span>
       <span class="category-title">{{ props.budget.category_name }}</span>
       <span class="category-total"
         >Total: {{ props.budget.budget_amount }}</span
