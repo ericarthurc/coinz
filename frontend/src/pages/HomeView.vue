@@ -11,6 +11,9 @@ onMounted(async () => {
 </script>
 
 <template>
+  <h3 v-if="budgetsStore.budgetsArray[0]" class="budget-month">
+    {{ budgetsStore.budgetsArray[0].month }}'s Budget
+  </h3>
   <div class="home-container">
     <BudgetItem
       v-for="(budget, _) in budgetsStore.budgetsArray"

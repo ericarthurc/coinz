@@ -3,7 +3,6 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <main>
-    <RouterView />
-  </main>
+  <h2 class="app-title">Coinz</h2>
+  <RouterView />
 </template>

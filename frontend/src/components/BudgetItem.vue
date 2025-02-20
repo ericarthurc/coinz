@@ -21,6 +21,7 @@ const props = defineProps<{ budget: IDtoBudget }>();
       <ExpenseItem
         v-for="expense in props.budget.expenses"
         :expense="expense"
+        :budget_id="props.budget.id"
         :key="expense.id"
       />
     </div>

@@ -1,6 +1,6 @@
 import type { IDtoBudget } from "@/types";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 export const useBudgetsStore = defineStore("budgets", () => {
   const budgetsArray = ref<IDtoBudget[]>([]);
@@ -33,6 +33,21 @@ export const useBudgetsStore = defineStore("budgets", () => {
     spent: number,
     store: string
   ) {
+    const budgetIndex = budgetsArray.value.findIndex((b) => b.id == budgetId);
+
+    const randomId = Math.floor(Math.random() * 10000);
+
+    budgetsArray.value.map((budget) => {
+      if (budget.id == budgetId) {
+        budget.expenses.push({
+          id: randomId,
+          expense_spent: spent,
+          store: store,
+          expense_timestamp: new Date(),
+        });
+      }
+    });
+
     try {
       const response = await fetch("/api/expense", {
         method: "POST",
@@ -46,19 +61,43 @@ export const useBudgetsStore = defineStore("budgets", () => {
         throw new Error("bad response");
       }
 
-      await getBudgets();
+      const newExpense = await response.json();
+
+      const expenseIndex = budgetsArray.value[budgetIndex].expenses.findIndex(
+        (e) => e.id == randomId
+      );
+      budgetsArray.value[budgetIndex].expenses[expenseIndex] = {
+        ...budgetsArray.value[budgetIndex].expenses[expenseIndex],
+        ...newExpense,
+      };
     } catch (error) {
-      console.log(error);
+      budgetsArray.value[budgetIndex].expenses.splice(
+        budgetsArray.value[budgetIndex].expenses.findIndex(
+          (e) => e.id == randomId
+        ),
+        1
+      );
     }
   }
 
-  async function deleteExpense(expenseId: number) {
+  async function deleteExpense(budgetId: number, expenseId: number) {
+    const budgetIndex = budgetsArray.value.findIndex((b) => b.id == budgetId);
+
+    budgetsArray.value[budgetIndex].expenses.splice(
+      budgetsArray.value[budgetIndex].expenses.findIndex(
+        (e) => e.id == expenseId
+      ),
+      1
+    );
+
     try {
       const response = await fetch(`/api/expense/${expenseId}`, {
         method: "DELETE",
       });
 
-      await getBudgets();
+      if (!response.ok) {
+        throw new Error("bad response");
+      }
     } catch (error) {
       console.log(error);
     }

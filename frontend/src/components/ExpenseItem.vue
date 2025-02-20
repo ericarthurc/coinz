@@ -6,6 +6,7 @@ import type { PropType } from "vue";
 const budgetsStore = useBudgetsStore();
 
 const props = defineProps({
+  budget_id: { type: Number, required: true },
   expense: { type: Object as PropType<IDtoExpense>, required: true },
 });
 </script>
@@ -22,7 +23,7 @@ const props = defineProps({
     }}</span>
     <button
       class="button-svg"
-      @click="budgetsStore.deleteExpense(props.expense.id)"
+      @click="budgetsStore.deleteExpense(props.budget_id, props.expense.id)"
     >
       <svg
         class="expense-remove-svg"
