@@ -112,13 +112,3 @@ export const useBudgetsStore = defineStore("budgets", () => {
     calculateRemaining,
   };
 });
-
-// budgetsArray.value.map((budget) => {
-//   if (budget.id == budgetId) {
-//     budget.expenses.push({
-//       id: 0,
-//       expense_amount: amount,
-//       store: store,
-//     });
-//   }
-// });
