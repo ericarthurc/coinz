@@ -31,9 +31,9 @@ type Expense struct {
 	Id          int       `json:"id"`
 	Budget_id   int       `json:"budget_id"`
 	Category_id int       `json:"category_id"`
-	Spent       float64   `json:"spent"`
+	Spent       float64   `json:"expense_spent"`
 	Store       string    `json:"store"`
-	Timestamp   time.Time `json:"timestamp"`
+	Timestamp   time.Time `json:"expense_timestamp"`
 }
 
 type Category struct {

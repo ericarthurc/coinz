@@ -2,7 +2,7 @@ export interface IDtoExpense {
   id: number;
   store: string;
   expense_spent: number;
-  expense_timestamp?: Date;
+  expense_timestamp?: Date | number;
 }
 
 export interface IDtoBudget {

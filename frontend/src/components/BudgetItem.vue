@@ -12,10 +12,10 @@ const props = defineProps<{ budget: IDtoBudget }>();
 <template>
   <div class="category-container">
     <div class="category-header">
-      <span></span>
+      <div></div>
       <span class="category-title">{{ props.budget.category_name }}</span>
       <span class="category-total"
-        >Total: {{ props.budget.budget_amount }}</span
+        >Total: ${{ props.budget.budget_amount }}</span
       >
     </div>
     <div class="expense-container">
@@ -30,12 +30,24 @@ const props = defineProps<{ budget: IDtoBudget }>();
     <div class="category-footer">
       <span class="category-footer-remaining"
         >Remaining:
-        {{ budgetsStore.calculateRemaining(props.budget.id).toFixed(2) }}</span
+        <span
+          :class="
+            budgetsStore.calculateRemaining(props.budget.id) >= 0
+              ? 'positive'
+              : 'negative'
+          "
+        >
+          ${{
+            budgetsStore.calculateRemaining(props.budget.id).toFixed(2)
+          }}</span
+        ></span
       >
       <span class="category-footer-spent"
         >Total Spent:
-        {{ budgetsStore.calculateSpent(props.budget.id).toFixed(2) }}</span
-      >
+        <span class="category-footer-spent-value"
+          >${{ budgetsStore.calculateSpent(props.budget.id).toFixed(2) }}</span
+        >
+      </span>
     </div>
   </div>
 </template>

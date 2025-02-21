@@ -39,6 +39,7 @@ const props = defineProps({
     <div class="expense-item-info">
       <span class="expense-timestamp">{{
         new Date(props.expense.expense_timestamp!).toLocaleDateString("en-US", {
+          timeZone: "America/Los_Angeles",
           month: "short",
           day: "2-digit",
         })

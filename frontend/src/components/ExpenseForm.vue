@@ -10,19 +10,20 @@ const props = defineProps({
 
 const spent = ref();
 const store = ref("");
+const date = ref();
 
 async function handleSubmit() {
   try {
     await budgetsStore.addExpenseToBudget(
       props.budgetId,
       spent.value,
-      store.value
+      store.value,
+      date.value
     );
     spent.value = undefined;
     store.value = "";
-  } catch (error) {
-    console.log("le poopy");
-  }
+    date.value = undefined;
+  } catch (error) {}
 }
 </script>
 
@@ -33,6 +34,8 @@ async function handleSubmit() {
       <input v-model="store" type="text" required />
       <label for="amout">Spent:</label>
       <input v-model="spent" type="number" step="0.01" required />
+      <label for="amout">Date:</label>
+      <input v-model="date" type="date" />
       <button class="button-svg" type="submit">
         <svg
           class="expense-add-svg"

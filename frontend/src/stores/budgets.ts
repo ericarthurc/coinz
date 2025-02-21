@@ -31,7 +31,8 @@ export const useBudgetsStore = defineStore("budgets", () => {
   async function addExpenseToBudget(
     budgetId: number,
     spent: number,
-    store: string
+    store: string,
+    timestamp?: number
   ) {
     const budgetIndex = budgetsArray.value.findIndex((b) => b.id == budgetId);
 
@@ -43,7 +44,7 @@ export const useBudgetsStore = defineStore("budgets", () => {
           id: randomId,
           expense_spent: spent,
           store: store,
-          expense_timestamp: new Date(),
+          expense_timestamp: new Date(`${timestamp}T08:00:00Z`) || new Date(),
         });
       }
     });
@@ -54,7 +55,7 @@ export const useBudgetsStore = defineStore("budgets", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ budgetId, spent, store }),
+        body: JSON.stringify({ budgetId, spent, store, timestamp }),
       });
 
       if (!response.ok) {
@@ -66,10 +67,11 @@ export const useBudgetsStore = defineStore("budgets", () => {
       const expenseIndex = budgetsArray.value[budgetIndex].expenses.findIndex(
         (e) => e.id == randomId
       );
-      budgetsArray.value[budgetIndex].expenses[expenseIndex] = {
+
+      budgetsArray.value[budgetIndex].expenses.splice(expenseIndex, 1, {
         ...budgetsArray.value[budgetIndex].expenses[expenseIndex],
         ...newExpense,
-      };
+      });
     } catch (error) {
       budgetsArray.value[budgetIndex].expenses.splice(
         budgetsArray.value[budgetIndex].expenses.findIndex(
