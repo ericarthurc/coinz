@@ -10,24 +10,35 @@ import (
 	"time"
 )
 
+type DateString string
+
+func (d *DateString) Scan(src any) error {
+	if t, ok := src.(time.Time); ok {
+		*d = DateString(t.Format("2006-01-02"))
+	} else if s, ok := src.(string); ok {
+		*d = DateString(s)
+	}
+	return nil
+}
+
 type DtoExpense struct {
-	Id               int       `json:"id"`
-	ExpenseSpent     float64   `json:"expense_spent"`
-	ExpenseTimestamp time.Time `json:"expense_timestamp"`
-	Store            string    `json:"store"`
+	Id              int        `json:"id"`
+	Amount          float64    `json:"amount"`
+	Merchant        string     `json:"merchant"`
+	TransactionDate DateString `json:"transaction_date"`
 }
 
 type DtoBudget struct {
-	Id             int          `json:"id"`
-	BudgetAmount   float64      `json:"budget_amount"`
-	CategoryAmount float64      `json:"category_amount"`
-	CategoryName   string       `json:"category_name"`
-	Month          string       `json:"month"`
-	Expenses       []DtoExpense `json:"expenses"`
+	Id           int          `json:"id"`
+	CategoryId   int          `json:"category_id"`
+	CategoryName string       `json:"category_name"`
+	BudgetAmount float64      `json:"budget_amount"`
+	Month        DateString   `json:"month"`
+	Expenses     []DtoExpense `json:"expenses"`
 }
 
 func GetAllMonthlyBudgetsDTO(dbp *database.DbPool) ([]*DtoBudget, error) {
-	query := `SELECT budget.id as budget_id, budget.budget_amount as budget_amount, budget.month as budget_month, category.id as category_id, category.amount as category_amount, category.name as category_name, expense.id as expense_id, expense.spent as expense_spent, expense.store as expense_store, expense.timestamp as expense_timestamp FROM budget LEFT JOIN expense on budget.id = expense.budget_id LEFT JOIN category ON budget.category_id = category.id ORDER BY budget.id, category.name;`
+	query := `SELECT monthly_budgets.id, categories.id, categories.name, monthly_budgets.budget_amount, monthly_budgets.month, expenses.id, expenses.amount, expenses.merchant, expenses.transaction_date FROM monthly_budgets LEFT JOIN expenses on monthly_budgets.id = expenses.monthly_budget_id LEFT JOIN categories ON monthly_budgets.category_id = categories.id ORDER BY monthly_budgets.id, categories.name;`
 
 	rows, err := dbp.Query(context.Background(), query)
 	if err != nil {
@@ -39,38 +50,37 @@ func GetAllMonthlyBudgetsDTO(dbp *database.DbPool) ([]*DtoBudget, error) {
 
 	for rows.Next() {
 		var budgetId int
-		var budgetAmount float64
-		var budgetMonth string
 		var categoryId int
-		var categoryAmount float64
 		var categoryName string
+		var budgetAmount float64
+		var budgetMonth DateString
 		var expenseId *int
-		var expenseSpent *float64
-		var expenseStore *string
-		var expenseTimestamp *time.Time
+		var expenseAmount *float64
+		var expenseMerchant *string
+		var expenseTransactionDate *DateString
 
-		err := rows.Scan(&budgetId, &budgetAmount, &budgetMonth, &categoryId, &categoryAmount, &categoryName, &expenseId, &expenseSpent, &expenseStore, &expenseTimestamp)
+		err := rows.Scan(&budgetId, &categoryId, &categoryName, &budgetAmount, &budgetMonth, &expenseId, &expenseAmount, &expenseMerchant, &expenseTransactionDate)
 		if err != nil {
 			return nil, err
 		}
 
 		if _, exists := dtoBudgetMap[budgetId]; !exists {
 			dtoBudgetMap[budgetId] = &DtoBudget{
-				Id:             budgetId,
-				BudgetAmount:   budgetAmount,
-				CategoryAmount: categoryAmount,
-				CategoryName:   categoryName,
-				Month:          budgetMonth,
-				Expenses:       []DtoExpense{},
+				Id:           budgetId,
+				CategoryId:   categoryId,
+				CategoryName: categoryName,
+				BudgetAmount: budgetAmount,
+				Month:        budgetMonth,
+				Expenses:     []DtoExpense{},
 			}
 		}
 
 		if expenseId != nil {
 			dtoBudgetMap[budgetId].Expenses = append(dtoBudgetMap[budgetId].Expenses, DtoExpense{
-				Id:               *expenseId,
-				ExpenseSpent:     *expenseSpent,
-				ExpenseTimestamp: *expenseTimestamp,
-				Store:            *expenseStore,
+				Id:              *expenseId,
+				Amount:          *expenseAmount,
+				Merchant:        *expenseMerchant,
+				TransactionDate: *expenseTransactionDate,
 			})
 		}
 	}
@@ -78,7 +88,7 @@ func GetAllMonthlyBudgetsDTO(dbp *database.DbPool) ([]*DtoBudget, error) {
 	result := slices.Collect(maps.Values(dtoBudgetMap))
 
 	sort.Slice(result, func(i, j int) bool {
-		if result[i].CategoryAmount == result[j].CategoryAmount {
+		if result[i].BudgetAmount == result[j].BudgetAmount {
 			return result[i].CategoryName < result[j].CategoryName
 		}
 		return result[i].BudgetAmount > result[j].BudgetAmount
@@ -86,7 +96,7 @@ func GetAllMonthlyBudgetsDTO(dbp *database.DbPool) ([]*DtoBudget, error) {
 
 	for _, budget := range result {
 		sort.Slice(budget.Expenses, func(i, j int) bool {
-			return budget.Expenses[i].ExpenseTimestamp.Unix() < budget.Expenses[j].ExpenseTimestamp.Unix()
+			return budget.Expenses[i].TransactionDate < budget.Expenses[j].TransactionDate
 		})
 	}
 

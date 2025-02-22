@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -30,7 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// initialize orbit with global styles
+	// initialize orbit
 	orb := orbit.NewOrbit()
 	r := chi.NewRouter()
 
@@ -47,6 +48,18 @@ func main() {
 	// 	http.ServeFile(w, r, "web/root/robots.txt")
 	// })
 	// r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
+
+	row := dbPool.Pool.QueryRow(context.Background(), "SELECT month FROM monthly_budgets")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var txDate model.DateString
+	err = row.Scan(&txDate)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(txDate)
 
 	r.Post("/api/expense", func(w http.ResponseWriter, r *http.Request) {
 
@@ -99,7 +112,7 @@ func main() {
 	// routes
 	r.Group(func(r chi.Router) {
 
-		r.Mount("/api/budget", budget.Routes(dbPool, orb))
+		r.Mount("/api/monthly-budgets", budget.Routes(dbPool, orb))
 	})
 
 	orbit.Launch(r)
