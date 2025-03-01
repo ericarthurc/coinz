@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -49,17 +48,17 @@ func main() {
 	// })
 	// r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 
-	row := dbPool.Pool.QueryRow(context.Background(), "SELECT month FROM monthly_budgets")
-	if err != nil {
-		fmt.Println(err)
-	}
+	// row := dbPool.Pool.QueryRow(context.Background(), "SELECT month FROM monthly_budgets")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	var txDate model.DateString
-	err = row.Scan(&txDate)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(txDate)
+	// var txDate model.DateString
+	// err = row.Scan(&txDate)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(txDate)
 
 	r.Post("/api/expense", func(w http.ResponseWriter, r *http.Request) {
 
