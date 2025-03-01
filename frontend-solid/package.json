@@ -11,14 +11,16 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^22.13.7",
+    "@types/node": "^22.13.8",
     "sass-embedded": "^1.85.1",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
     "vite-plugin-solid": "^2.11.6"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.2.0",
     "@solidjs/router": "^0.15.3",
+    "date-fns": "^4.1.0",
     "solid-js": "^1.9.5",
     "url": "^0.11.4"
   },
