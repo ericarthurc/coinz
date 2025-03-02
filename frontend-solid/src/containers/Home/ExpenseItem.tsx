@@ -15,17 +15,15 @@ const ExpenseItem: Component<IProps> = (props) => {
         <span class="bc_exp_item_header_merchant">
           {props.expense.merchant}
         </span>
-        <button class="">
+        <button class="button_hidden_svg">
           <svg
-            class=""
+            class="bc_svg_remove"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
             viewBox="0 0 24 24"
           >
             <path
-              fill="#fff"
-              stroke="#232112"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-miterlimit="10"

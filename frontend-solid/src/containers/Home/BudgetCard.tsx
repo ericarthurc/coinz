@@ -21,7 +21,9 @@ const BudgetCard: Component<IProps> = (props) => {
       <div class="bc_header">
         <span class="bc_header_spacer"></span>
         <span class="bc_header_category">{props.budget.category_name}</span>
-        <span class="bc_header_amount">{props.budget.budget_amount}</span>
+        <span class="bc_header_amount">
+          Budgeted: {props.budget.budget_amount}
+        </span>
       </div>
       <div class="bc_exp">
         <For each={props.budget.expenses}>
@@ -35,17 +37,15 @@ const BudgetCard: Component<IProps> = (props) => {
           value={formData.merchant}
           onChange={(e) => setFormData("merchant", e.currentTarget.value)}
         />
-        <button type="submit">
+        <button class="button_hidden_svg" type="submit">
           <svg
-            class="expense-add-svg"
+            class="bc_svg_add"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
             viewBox="0 0 24 24"
           >
             <path
-              fill="#fff"
-              stroke="#000"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-miterlimit="10"
