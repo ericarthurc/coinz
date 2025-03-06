@@ -6,22 +6,21 @@
 }
 
 .budgets_container {
+  margin-top: 10px;
 }
 
 .bc {
   // line-height: 1;
   background-color: #fff;
   border-radius: 6px;
-  margin: 5px 0px;
-  // padding: 10px;
-  cursor: default;
+  margin-bottom: 10px;
   overflow: hidden;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px;
+  // box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px;
 
   &_header {
     // border-top-left-radius: 0.5rem;
     // border-top-right-radius: 0.5rem;
-    padding: 3px 8px;
+    padding: 4px 8px;
     background-color: #47a892;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -33,7 +32,7 @@
       color: #fff;
       justify-self: center;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 400;
       text-transform: capitalize;
     }
 
@@ -56,13 +55,21 @@
       border: 1px solid #47a892;
       border-radius: 6px;
       padding: 5px 0px;
-      font-size: 14px;
+      font-size: 12px;
       align-items: center;
       // box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px;
 
+      button {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+      }
+
       &_header {
         text-align: center;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 500;
         display: flex;
         padding-left: 11px;
@@ -93,10 +100,55 @@
     }
   }
 
+  &_form_container {
+    margin-top: 6px;
+    margin-bottom: 10px;
+    padding: 0px 10px;
+
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+    }
+
+    &_form {
+      background-color: #2c273341;
+      border: 1px solid #a09494;
+      border-radius: 6px;
+      padding: 3px 10px;
+      height: 30px;
+      background-color: #d8eef8;
+      display: flex;
+      align-items: center;
+
+      label {
+        color: #000000;
+        font-size: 14px;
+      }
+
+      input {
+        border: none;
+        border-bottom: 1px solid #000000;
+        // margin: 0 5px;
+        // width: 100%;
+        background-color: transparent;
+        color: #000000;
+        outline: none;
+      }
+    }
+  }
+
+  &_svg_icon {
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+  }
+
   &_svg_remove {
     stroke: #ce423a;
     fill: #f3cfcd;
-    cursor: pointer;
 
     :hover {
       stroke: #663c39;
@@ -105,9 +157,8 @@
   }
 
   &_svg_add {
-    stroke: #5ce473;
-    fill: #d7f3dc;
-    cursor: pointer;
+    stroke: #469653;
+    fill: #d2ecd7;
 
     :hover {
       stroke: #51976c;

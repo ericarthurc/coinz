@@ -12,8 +12,14 @@ interface IProps {
 const BudgetCard: Component<IProps> = (props) => {
   const { createBudgetExpense } = budgetsStore;
 
-  const [formData, setFormData] = createStore<{ merchant: string }>({
+  const [formData, setFormData] = createStore<{
+    amount: number;
+    merchant: string;
+    date: string;
+  }>({
+    amount: NaN,
     merchant: "",
+    date: "",
   });
 
   return (
@@ -30,31 +36,55 @@ const BudgetCard: Component<IProps> = (props) => {
           {(expense, _index) => <ExpenseItem expense={expense} />}
         </For>
       </div>
-      <form onSubmit={(e) => createBudgetExpense(e, formData)}>
-        <input
-          type="text"
-          required
-          value={formData.merchant}
-          onChange={(e) => setFormData("merchant", e.currentTarget.value)}
-        />
-        <button class="button_hidden_svg" type="submit">
-          <svg
-            class="bc_svg_add"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-miterlimit="10"
-              stroke-width="1.5"
-              d="M8 12h8m-4 4V8m10 4c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10"
-            />
-          </svg>
-        </button>
-      </form>
+      <div class="bc_form_container">
+        <form
+          class="bc_form_container_form"
+          onSubmit={(e) => createBudgetExpense(e, formData)}
+        >
+          <label for="">Store:</label>
+          <input
+            type="text"
+            required
+            value={formData.merchant}
+            onChange={(e) => setFormData("merchant", e.currentTarget.value)}
+          />
+          <label for="">Spent:</label>
+          <input
+            name=""
+            type="number"
+            step="0.01"
+            required
+            value={formData.amount}
+            onChange={(e) =>
+              setFormData("amount", parseFloat(e.currentTarget.value))
+            }
+          />
+          <label for="">Date:</label>
+          <input
+            type="date"
+            required
+            value={formData.date}
+            onChange={(e) => setFormData("date", e.currentTarget.value)}
+          />
+          <button type="submit">
+            <svg
+              class="bc_svg_icon bc_svg_add"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-miterlimit="10"
+                stroke-width="1.5"
+                d="M8 12h8m-4 4V8m10 4c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10"
+              />
+            </svg>
+          </button>
+        </form>
+      </div>
       <div class="bc_footer"></div>
     </div>
   );
