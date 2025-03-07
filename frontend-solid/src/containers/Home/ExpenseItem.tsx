@@ -1,21 +1,26 @@
 import { Component } from "solid-js";
-import { format } from "date-fns";
-import { tz } from "@date-fns/tz";
 
 import { Expense } from "@/types";
+import { localizeDateToPST } from "@/utilities/date";
+import budgetsStore from "@/stores/budgetsStore";
 
 interface IProps {
+  budgetId: number;
   expense: Expense;
 }
 
 const ExpenseItem: Component<IProps> = (props) => {
+  const { deleteBudgetExpense } = budgetsStore;
+
   return (
     <div class="bc_exp_item">
       <div class="bc_exp_item_header">
         <span class="bc_exp_item_header_merchant">
           {props.expense.merchant}
         </span>
-        <button>
+        <button
+          onclick={() => deleteBudgetExpense(props.budgetId, props.expense.id)}
+        >
           <svg
             class="bc_svg_icon bc_svg_remove"
             xmlns="http://www.w3.org/2000/svg"
@@ -35,9 +40,7 @@ const ExpenseItem: Component<IProps> = (props) => {
       </div>
       <div class="bc_exp_item_info">
         <span class="bc_exp_item_info_date">
-          {format(props.expense.transaction_date, "LLL dd, yyyy", {
-            in: tz("America/Los_Angeles"),
-          })}
+          {localizeDateToPST(props.expense.transaction_date)}
         </span>
         <span class="bc_exp_item_info_amount">{props.expense.amount}</span>
       </div>

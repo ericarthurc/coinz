@@ -10,7 +10,8 @@ interface IProps {
 }
 
 const BudgetCard: Component<IProps> = (props) => {
-  const { createBudgetExpense } = budgetsStore;
+  const { createBudgetExpense, totalSpentByBudget, remainingBalanceByBudget } =
+    budgetsStore;
 
   const [formData, setFormData] = createStore<{
     amount: number;
@@ -19,7 +20,7 @@ const BudgetCard: Component<IProps> = (props) => {
   }>({
     amount: NaN,
     merchant: "",
-    date: "",
+    date: new Date().toDateString(),
   });
 
   return (
@@ -33,15 +34,17 @@ const BudgetCard: Component<IProps> = (props) => {
       </div>
       <div class="bc_exp">
         <For each={props.budget.expenses}>
-          {(expense, _index) => <ExpenseItem expense={expense} />}
+          {(expense, _index) => (
+            <ExpenseItem budgetId={props.budget.id} expense={expense} />
+          )}
         </For>
       </div>
       <div class="bc_form_container">
         <form
           class="bc_form_container_form"
-          onSubmit={(e) => createBudgetExpense(e, formData)}
+          onSubmit={(e) => createBudgetExpense(e, formData, props.budget.id)}
         >
-          <label for="">Store:</label>
+          <label for="">Merchant:</label>
           <input
             type="text"
             required
@@ -85,7 +88,20 @@ const BudgetCard: Component<IProps> = (props) => {
           </button>
         </form>
       </div>
-      <div class="bc_footer"></div>
+      <div class="bc_footer">
+        <span
+          class={`bc_footer_remaining ${
+            remainingBalanceByBudget(props.budget.id) > 0
+              ? "positive"
+              : "negative"
+          }`}
+        >
+          Remaining: {remainingBalanceByBudget(props.budget.id).toFixed(2)}
+        </span>
+        <span class="bc_footer_spent">
+          Spent: {totalSpentByBudget(props.budget.id).toFixed(2)}
+        </span>
+      </div>
     </div>
   );
 };

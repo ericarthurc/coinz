@@ -11,12 +11,12 @@ type MonthlyBudget struct {
 }
 
 type Expense struct {
-	Id          int       `json:"id"`
-	Budget_id   int       `json:"budget_id"`
-	Category_id int       `json:"category_id"`
-	Spent       float64   `json:"expense_spent"`
-	Store       string    `json:"store"`
-	Timestamp   time.Time `json:"expense_timestamp"`
+	Id              int        `json:"id"`
+	MonthlyBudgetId int        `json:"monthly_budget_id"`
+	Amount          float64    `json:"amount"`
+	Merchant        string     `json:"merchant"`
+	TransactionDate DateString `json:"transaction_date"`
+	Created_at      time.Time  `json:"created_at"`
 }
 
 type Category struct {

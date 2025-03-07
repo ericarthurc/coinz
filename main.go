@@ -63,9 +63,10 @@ func main() {
 	r.Post("/api/expense", func(w http.ResponseWriter, r *http.Request) {
 
 		type FormData struct {
-			BudgetId int
-			Spent    float32
-			Store    string
+			MonthlyBudgetId int     `json:"monthly_budget_id"`
+			Amount          float64 `json:"amount"`
+			Merchant        string  `json:"merchant"`
+			TransactionDate string  `json:"transaction_date"`
 		}
 
 		var data FormData
@@ -75,10 +76,11 @@ func main() {
 			return
 		}
 
-		rows, err := dbPool.Pool.Query(context.Background(), `INSERT INTO expense (spent, store, budget_id, category_id) VALUES (@spent, @store, @budget_id, (SELECT category_id FROM budget WHERE budget.id = (@budget_id))) RETURNING *;`, pgx.NamedArgs{
-			"spent":     data.Spent,
-			"store":     data.Store,
-			"budget_id": data.BudgetId,
+		rows, err := dbPool.Pool.Query(context.Background(), `INSERT INTO expenses (amount, merchant, monthly_budget_id, transaction_date) VALUES (@amount, @merchant, @monthly_budget_id, @transaction_date) RETURNING *;`, pgx.NamedArgs{
+			"amount":            data.Amount,
+			"merchant":          data.Merchant,
+			"monthly_budget_id": data.MonthlyBudgetId,
+			"transaction_date":  data.TransactionDate,
 		})
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -97,7 +99,7 @@ func main() {
 	r.Delete("/api/expense/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 
-		_, err = dbPool.Pool.Exec(context.Background(), `DELETE FROM expense WHERE expense.id = (@id)`, pgx.NamedArgs{
+		_, err = dbPool.Pool.Exec(context.Background(), `DELETE FROM expenses WHERE expenses.id = (@id)`, pgx.NamedArgs{
 			"id": id,
 		})
 		if err != nil {
