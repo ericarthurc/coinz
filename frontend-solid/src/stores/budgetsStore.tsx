@@ -12,6 +12,12 @@ function budgetsStore() {
     { initialValue: [], deferStream: true }
   );
 
+  function totalSpentOverall() {
+    return budgetList()
+      .map((b) => b.expenses.reduce((acc, curr) => acc + curr.amount, 0))
+      .reduce((a, b) => a + b, 0);
+  }
+
   function totalSpentByBudget(budgetId: number) {
     return budgetList()
       .find((b) => b.id == budgetId)!
@@ -164,6 +170,7 @@ function budgetsStore() {
     refetch,
     createBudgetExpense,
     deleteBudgetExpense,
+    totalSpentOverall,
     totalSpentByBudget,
     remainingBalanceByBudget,
   };
